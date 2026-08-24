@@ -16,25 +16,25 @@
   <body>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <header class="app-header">
-      <p class="brand-mark">
-        <svg viewBox="0 0 24 24" aria-hidden="true" class="icon">
-          <path
-            fill="currentColor"
-            d="M12 2.5c3.2 4.6 6.5 8 6.5 11.7a6.5 6.5 0 1 1-13 0C5.5 10.5 8.8 7.1 12 2.5Z"
-          />
-        </svg>
-        Skincare Routine Keeper
-      </p>
-      <h1>Your shelf, sorted by sun.</h1>
-      <p class="tagline">Catalog what you own, keep mornings and evenings in order, and pause anything you're resting.</p>
-      <p class="shelf-summary" id="shelf-summary"></p>
-      <div class="seed-row" id="seed-row" hidden>
-        <button class="btn" type="button" id="seed-btn">Load a sample shelf</button>
-      </div>
-    </header>
-
     <main class="layout">
+      <header class="app-header">
+        <p class="brand-mark">
+          <svg viewBox="0 0 24 24" aria-hidden="true" class="icon">
+            <path
+              fill="currentColor"
+              d="M12 2.5c3.2 4.6 6.5 8 6.5 11.7a6.5 6.5 0 1 1-13 0C5.5 10.5 8.8 7.1 12 2.5Z"
+            />
+          </svg>
+          Skincare Routine Keeper
+        </p>
+        <h1>Your shelf, sorted by sun.</h1>
+        <p class="tagline">Catalog what you own, keep mornings and evenings in order, and pause anything you're resting.</p>
+        <p class="shelf-summary" id="shelf-summary"></p>
+        <div class="seed-row" id="seed-row" hidden>
+          <button class="btn" type="button" id="seed-btn">Load a sample shelf</button>
+        </div>
+      </header>
+
       <section class="panel add-panel" aria-labelledby="add-heading">
         <h2 id="add-heading">Add a product</h2>
         <form id="product-form" autocomplete="off" novalidate>
