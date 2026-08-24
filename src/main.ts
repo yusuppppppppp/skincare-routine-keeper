@@ -167,9 +167,15 @@ function renderSummary(): void {
   els.summary.textContent = parts.filter((_, i) => (i === 1 ? paused > 0 : true)).join(' · ');
 }
 
+const SLOT_KEYWORDS: Record<RoutineSlot, string> = {
+  morning: 'morning am pagi',
+  evening: 'evening pm night malam',
+  both: 'both am pm keduanya',
+};
+
 function matchesSearch(product: SkincareProduct): boolean {
   if (!searchQuery) return true;
-  const haystack = `${product.name} ${product.brand} ${product.concern}`.toLowerCase();
+  const haystack = `${product.name} ${product.brand} ${product.concern} ${SLOT_KEYWORDS[product.routineSlot]}`.toLowerCase();
   return haystack.includes(searchQuery);
 }
 
