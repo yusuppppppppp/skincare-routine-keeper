@@ -19,6 +19,11 @@ function qs<T extends Element>(selector: string): T {
 
 const els = {
   form: qs<HTMLFormElement>('#product-form'),
+  submitBtn: qs<HTMLButtonElement>('#submit-btn'),
+  cancelEditBtn: qs<HTMLButtonElement>('#cancel-edit-btn'),
+  searchInput: qs<HTMLInputElement>('#search-input'),
+  seedRow: qs<HTMLElement>('#seed-row'),
+  seedBtn: qs<HTMLButtonElement>('#seed-btn'),
   morningList: qs<HTMLUListElement>('#morning-list'),
   eveningList: qs<HTMLUListElement>('#evening-list'),
   pausedList: qs<HTMLUListElement>('#paused-list'),
@@ -29,6 +34,11 @@ const els = {
   summary: qs<HTMLElement>('#shelf-summary'),
   toast: qs<HTMLElement>('#toast'),
 };
+
+/* ---------------------------------- state --------------------------------- */
+
+let editingId: string | null = null;
+let searchQuery = '';
 
 /* --------------------------------- utilities ------------------------------ */
 
@@ -74,6 +84,7 @@ function createTag(text: string, variant: string): HTMLLIElement {
 function createCard(product: SkincareProduct): HTMLLIElement {
   const li = document.createElement('li');
   li.className = product.isActive ? 'product-card' : 'product-card is-paused';
+  if (editingId === product.id) li.classList.add('is-editing');
   li.dataset.id = product.id;
 
   const info = document.createElement('div');
@@ -98,6 +109,13 @@ function createCard(product: SkincareProduct): HTMLLIElement {
   const actions = document.createElement('div');
   actions.className = 'card-actions';
 
+  const editBtn = document.createElement('button');
+  editBtn.type = 'button';
+  editBtn.className = 'btn btn-small btn-toggle';
+  editBtn.dataset.action = 'edit';
+  editBtn.textContent = 'Edit';
+  editBtn.setAttribute('aria-label', `Edit ${product.name}`);
+
   const toggleBtn = document.createElement('button');
   toggleBtn.type = 'button';
   toggleBtn.className = 'btn btn-small btn-toggle';
@@ -117,7 +135,7 @@ function createCard(product: SkincareProduct): HTMLLIElement {
     deleteBtn.setAttribute('aria-label', `Delete ${product.name}`);
   }
 
-  actions.append(toggleBtn, deleteBtn);
+  actions.append(editBtn, toggleBtn, deleteBtn);
   li.append(info, actions);
   return li;
 }
@@ -149,26 +167,44 @@ function renderSummary(): void {
   els.summary.textContent = parts.filter((_, i) => (i === 1 ? paused > 0 : true)).join(' · ');
 }
 
+function matchesSearch(product: SkincareProduct): boolean {
+  if (!searchQuery) return true;
+  const haystack = `${product.name} ${product.brand} ${product.concern}`.toLowerCase();
+  return haystack.includes(searchQuery);
+}
+
 function render(): void {
   const inShelf = (slot: RoutineSlot) =>
-    products.filter((p) => p.isActive && (p.routineSlot === slot || p.routineSlot === 'both'));
-  const paused = products.filter((p) => !p.isActive);
+    products.filter(
+      (p) => p.isActive && (p.routineSlot === slot || p.routineSlot === 'both') && matchesSearch(p),
+    );
+  const paused = products.filter((p) => !p.isActive && matchesSearch(p));
+  const searching = searchQuery.length > 0;
 
-  renderList(els.morningList, inShelf('morning'), 'Nothing here yet — your AM essentials go on this shelf.');
-  renderList(els.eveningList, inShelf('evening'), 'Nothing here yet — your PM essentials go on this shelf.');
-  renderList(els.pausedList, paused, 'No products on pause.');
+  const morningEmpty = searching
+    ? 'No morning products match your search.'
+    : 'Nothing here yet — your AM essentials go on this shelf.';
+  const eveningEmpty = searching
+    ? 'No evening products match your search.'
+    : 'Nothing here yet — your PM essentials go on this shelf.';
+  const pausedEmpty = searching ? 'No paused products match your search.' : 'No products on pause.';
+
+  renderList(els.morningList, inShelf('morning'), morningEmpty);
+  renderList(els.eveningList, inShelf('evening'), eveningEmpty);
+  renderList(els.pausedList, paused, pausedEmpty);
 
   els.morningCount.textContent = String(inShelf('morning').length);
   els.eveningCount.textContent = String(inShelf('evening').length);
   els.pausedCount.textContent = String(paused.length);
   els.pausedSection.hidden = paused.length === 0;
+  els.seedRow.hidden = products.length > 0;
 
   renderSummary();
 }
 
 /* --------------------------------- actions -------------------------------- */
 
-function handleAdd(event: SubmitEvent): void {
+function handleSave(event: SubmitEvent): void {
   event.preventDefault();
   const data = new FormData(els.form);
 
@@ -178,11 +214,24 @@ function handleAdd(event: SubmitEvent): void {
   const slotValue = data.get('slot');
 
   if (!name || !brand || !concernRaw || !isRoutineSlot(slotValue)) {
-    showToast('Please fill in every field before adding.');
+    showToast('Please fill in every field before saving.');
     return;
   }
 
   const concern = concernRaw.charAt(0).toUpperCase() + concernRaw.slice(1);
+
+  if (editingId !== null) {
+    const product = products.find((p) => p.id === editingId);
+    if (product) {
+      Object.assign(product, { name, brand, concern, routineSlot: slotValue });
+      if (!persist()) return;
+      cancelEdit(false);
+      render();
+      showToast(`${name} updated.`);
+      return;
+    }
+    cancelEdit(false);
+  }
 
   products.unshift({ id: createId(), name, brand, concern, routineSlot: slotValue, isActive: true });
   if (!persist()) return;
@@ -192,6 +241,54 @@ function handleAdd(event: SubmitEvent): void {
   els.form.reset();
   qs<HTMLInputElement>('#product-name').focus();
   showToast(`${name} added to your shelf.`);
+}
+
+function startEdit(id: string): void {
+  const product = products.find((p) => p.id === id);
+  if (!product) return;
+
+  editingId = id;
+  cancelPendingDelete();
+
+  (els.form.elements.namedItem('name') as HTMLInputElement).value = product.name;
+  (els.form.elements.namedItem('brand') as HTMLInputElement).value = product.brand;
+  (els.form.elements.namedItem('concern') as HTMLInputElement).value = product.concern;
+  (els.form.elements.namedItem('slot') as HTMLInputElement).value = product.routineSlot;
+
+  els.submitBtn.textContent = 'Save changes';
+  els.cancelEditBtn.hidden = false;
+  els.form.classList.add('is-editing');
+
+  els.form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  qs<HTMLInputElement>('#product-name').focus();
+  render();
+}
+
+function cancelEdit(announce = true): void {
+  if (editingId === null) return;
+  editingId = null;
+  els.form.reset();
+  els.submitBtn.textContent = 'Add to shelf';
+  els.cancelEditBtn.hidden = true;
+  els.form.classList.remove('is-editing');
+  if (announce) {
+    render();
+    showToast('Edit cancelled.');
+  }
+}
+
+function seedShelf(): void {
+  const samples: Array<Omit<SkincareProduct, 'id'>> = [
+    { name: 'Hydrating Serum', brand: 'Glow Lab', concern: 'Hydration', routineSlot: 'both', isActive: true },
+    { name: 'Solar Defense SPF 50', brand: 'Sunshield', concern: 'SPF', routineSlot: 'morning', isActive: true },
+    { name: 'Ceramide Repair Cream', brand: 'Barrier Co', concern: 'Hydration', routineSlot: 'both', isActive: true },
+    { name: 'Retinol Night Oil', brand: 'Luna Labs', concern: 'Anti-aging', routineSlot: 'evening', isActive: true },
+    { name: 'Clarifying Toner', brand: 'Pure Root', concern: 'Acne', routineSlot: 'evening', isActive: false },
+  ];
+  products.unshift(...samples.map((s) => ({ ...s, id: createId() })));
+  if (!persist()) return;
+  render();
+  showToast('Sample shelf loaded — make it yours!');
 }
 
 function handleToggle(id: string): void {
@@ -222,6 +319,7 @@ function handleDelete(id: string): void {
   const [removed] = products.splice(index, 1);
   pendingDeleteId = null;
   window.clearTimeout(pendingDeleteTimer);
+  if (editingId === removed.id) cancelEdit(false);
   persist();
   render();
   showToast(`${removed.name} removed from your shelf.`);
@@ -229,12 +327,32 @@ function handleDelete(id: string): void {
 
 /* ------------------------------ event wiring ------------------------------ */
 
-els.form.addEventListener('submit', handleAdd);
+els.form.addEventListener('submit', handleSave);
+els.cancelEditBtn.addEventListener('click', () => cancelEdit());
+els.seedBtn.addEventListener('click', seedShelf);
+
+els.searchInput.addEventListener('input', () => {
+  searchQuery = els.searchInput.value.trim().toLowerCase();
+  render();
+});
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && pendingDeleteId !== null) {
-    cancelPendingDelete();
-    render();
+  if (event.key === 'Escape') {
+    if (pendingDeleteId !== null) {
+      cancelPendingDelete();
+      render();
+    } else if (editingId !== null) {
+      cancelEdit();
+    }
+    return;
+  }
+
+  const inField =
+    event.target instanceof HTMLElement &&
+    (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA');
+  if (event.key === '/' && !inField) {
+    event.preventDefault();
+    els.searchInput.focus();
   }
 });
 
@@ -247,6 +365,7 @@ document.addEventListener('click', (event) => {
 
   if (button.dataset.action === 'toggle') handleToggle(card.dataset.id);
   else if (button.dataset.action === 'delete') handleDelete(card.dataset.id);
+  else if (button.dataset.action === 'edit') startEdit(card.dataset.id);
 });
 
 render();

@@ -365,6 +365,57 @@ button {
   box-shadow: var(--shadow-md);
 }
 
+.btn-quiet {
+  background: var(--surface-tint);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.form-actions .btn-primary {
+  justify-self: auto;
+}
+
+#product-form.is-editing {
+  border: 2.5px dashed var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  margin: -1rem;
+}
+
+.toolbar {
+  padding: 1rem 1.15rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.toolbar .field-input {
+  background: var(--surface);
+}
+
+.seed-row {
+  margin-top: 1rem;
+}
+
+.seed-row .btn {
+  background: var(--mint);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .btn-small {
   padding: 0.42rem 0.9rem;
   font-size: 0.85rem;
@@ -523,6 +574,11 @@ button {
   text-decoration: line-through;
   text-decoration-thickness: 2px;
   text-decoration-color: var(--coral);
+}
+
+.product-card.is-editing {
+  border-color: var(--accent-deep);
+  box-shadow: inset 7px 0 0 var(--accent), var(--shadow-md), 0 0 0 3px var(--accent-soft, var(--mint));
 }
 
 .product-name {

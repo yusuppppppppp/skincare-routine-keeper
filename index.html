@@ -29,6 +29,9 @@
       <h1>Your shelf, sorted by sun.</h1>
       <p class="tagline">Catalog what you own, keep mornings and evenings in order, and pause anything you're resting.</p>
       <p class="shelf-summary" id="shelf-summary"></p>
+      <div class="seed-row" id="seed-row" hidden>
+        <button class="btn" type="button" id="seed-btn">Load a sample shelf</button>
+      </div>
     </header>
 
     <main class="layout">
@@ -106,13 +109,28 @@
             </div>
           </fieldset>
 
-          <button class="btn btn-primary" type="submit">
-            <svg viewBox="0 0 24 24" aria-hidden="true" class="icon icon-sm">
-              <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14" />
-            </svg>
-            Add to shelf
-          </button>
+          <div class="form-actions">
+            <button class="btn btn-quiet" type="button" id="cancel-edit-btn" hidden>Cancel</button>
+            <button class="btn btn-primary" type="submit" id="submit-btn">
+              <svg viewBox="0 0 24 24" aria-hidden="true" class="icon icon-sm">
+                <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14" />
+              </svg>
+              Add to shelf
+            </button>
+          </div>
         </form>
+      </section>
+
+      <section class="panel toolbar" aria-labelledby="search-heading">
+        <h2 id="search-heading" class="visually-hidden">Search your shelf</h2>
+        <label class="field-label" for="search-input">Search your shelf</label>
+        <input
+          class="field-input"
+          id="search-input"
+          type="search"
+          placeholder="Filter by name, brand, or concern…  ( / )"
+          maxlength="60"
+        />
       </section>
 
       <section class="shelf-section" aria-labelledby="morning-heading">
