@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A tidy home for your skincare shelf — catalog products, sort them into morning and evening routines, and pause what you're not using."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%237a9b76' d='M12 2.5c3.2 4.6 6.5 8 6.5 11.7a6.5 6.5 0 1 1-13 0C5.5 10.5 8.8 7.1 12 2.5Z'/%3E%3C/svg%3E"
+    />
+    <title>Skincare Routine Keeper</title>
+  </head>
+  <body>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <header class="app-header">
+      <p class="brand-mark">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="icon">
+          <path
+            fill="currentColor"
+            d="M12 2.5c3.2 4.6 6.5 8 6.5 11.7a6.5 6.5 0 1 1-13 0C5.5 10.5 8.8 7.1 12 2.5Z"
+          />
+        </svg>
+        Skincare Routine Keeper
+      </p>
+      <h1>Your shelf, sorted by sun.</h1>
+      <p class="tagline">Catalog what you own, keep mornings and evenings in order, and pause anything you're resting.</p>
+      <p class="shelf-summary" id="shelf-summary"></p>
+    </header>
+
+    <main class="layout">
+      <section class="panel add-panel" aria-labelledby="add-heading">
+        <h2 id="add-heading">Add a product</h2>
+        <form id="product-form" autocomplete="off" novalidate>
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" for="product-name">Product name</label>
+              <input
+                class="field-input"
+                id="product-name"
+                name="name"
+                type="text"
+                placeholder="e.g. Hydra Boost Serum"
+                required
+                minlength="2"
+                maxlength="60"
+              />
+            </div>
+            <div class="field">
+              <label class="field-label" for="product-brand">Brand</label>
+              <input
+                class="field-input"
+                id="product-brand"
+                name="brand"
+                type="text"
+                placeholder="e.g. Glow Lab"
+                required
+                minlength="2"
+                maxlength="40"
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="product-concern">Skin concern</label>
+            <input
+              class="field-input"
+              id="product-concern"
+              name="concern"
+              type="text"
+              list="concern-suggestions"
+              placeholder="hydration, acne, SPF, anti-aging…"
+              required
+              minlength="2"
+              maxlength="30"
+            />
+            <datalist id="concern-suggestions">
+              <option value="Hydration"></option>
+              <option value="Acne"></option>
+              <option value="SPF"></option>
+              <option value="Anti-aging"></option>
+              <option value="Brightening"></option>
+              <option value="Exfoliating"></option>
+              <option value="Soothing"></option>
+            </datalist>
+          </div>
+
+          <fieldset class="slot-fieldset">
+            <legend class="field-label">Routine slot</legend>
+            <div class="slot-options">
+              <label class="slot-option">
+                <input type="radio" name="slot" value="morning" checked />
+                <span>Morning</span>
+              </label>
+              <label class="slot-option">
+                <input type="radio" name="slot" value="evening" />
+                <span>Evening</span>
+              </label>
+              <label class="slot-option">
+                <input type="radio" name="slot" value="both" />
+                <span>Both</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <button class="btn btn-primary" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="icon icon-sm">
+              <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14" />
+            </svg>
+            Add to shelf
+          </button>
+        </form>
+      </section>
+
+      <section class="shelf-section" aria-labelledby="morning-heading">
+        <div class="shelf-heading">
+          <span class="shelf-icon morning" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon"><circle cx="12" cy="12" r="4" fill="currentColor" /><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="5" /><line x1="12" y1="19" x2="12" y2="21.5" /><line x1="2.5" y1="12" x2="5" y2="12" /><line x1="19" y1="12" x2="21.5" y2="12" /><line x1="5.3" y1="5.3" x2="7" y2="7" /><line x1="17" y1="17" x2="18.7" y2="18.7" /><line x1="5.3" y1="18.7" x2="7" y2="17" /><line x1="17" y1="7" x2="18.7" y2="5.3" /></g></svg>
+          </span>
+          <h2 id="morning-heading">Morning routine</h2>
+          <span class="count-pill" id="morning-count" aria-label="products in this routine">0</span>
+        </div>
+        <ul class="products" id="morning-list"></ul>
+        <div class="plank" aria-hidden="true"></div>
+      </section>
+
+      <section class="shelf-section" aria-labelledby="evening-heading">
+        <div class="shelf-heading">
+          <span class="shelf-icon evening" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon"><path fill="currentColor" d="M20.6 13.4A8.5 8.5 0 1 1 10.6 3.4a7 7 0 1 0 10 10Z" /></svg>
+          </span>
+          <h2 id="evening-heading">Evening routine</h2>
+          <span class="count-pill" id="evening-count" aria-label="products in this routine">0</span>
+        </div>
+        <ul class="products" id="evening-list"></ul>
+        <div class="plank" aria-hidden="true"></div>
+      </section>
+
+      <section class="shelf-section paused-section" id="paused-section" aria-labelledby="paused-heading" hidden>
+        <div class="shelf-heading">
+          <span class="shelf-icon paused" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="icon"><g fill="currentColor"><rect x="7" y="5" width="3.4" height="14" rx="1" /><rect x="13.6" y="5" width="3.4" height="14" rx="1" /></g></svg>
+          </span>
+          <h2 id="paused-heading">On pause</h2>
+          <span class="count-pill" id="paused-count" aria-label="paused products">0</span>
+        </div>
+        <ul class="products" id="paused-list"></ul>
+        <div class="plank" aria-hidden="true"></div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>Saved locally in your browser. No account, no cloud — just your shelf.</p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

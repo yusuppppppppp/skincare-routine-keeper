@@ -1,0 +1,546 @@
+/* ------------------------------- design tokens ---------------------------- */
+
+:root {
+  --bg: #f6f1ea;
+  --surface: #fffdf8;
+  --surface-soft: #f0e9df;
+  --ink: #38322b;
+  --muted: #8a7f70;
+  --line: #e5dccc;
+  --accent: #7a9b76;
+  --accent-strong: #5f8259;
+  --accent-soft: #e4ede2;
+  --gold: #c99a4b;
+  --gold-soft: #f3e8d3;
+  --danger: #b45f4d;
+  --danger-soft: #f4e0db;
+  --radius: 14px;
+  --radius-sm: 9px;
+  --shadow: 0 10px 24px -14px rgb(56 50 43 / 0.28);
+  --font:
+    "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #211d18;
+    --surface: #2b261f;
+    --surface-soft: #34302a;
+    --ink: #efe8dc;
+    --muted: #a89a88;
+    --line: #453e33;
+    --accent: #8fb08a;
+    --accent-strong: #a5c39f;
+    --accent-soft: #35402f;
+    --gold: #d9ab63;
+    --gold-soft: #40351f;
+    --danger: #cf8570;
+    --danger-soft: #45291f;
+    --shadow: 0 12px 26px -16px rgb(0 0 0 / 0.65);
+  }
+}
+
+/* ---------------------------------- base ---------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: clamp(1rem, 3vw, 2.5rem) clamp(1rem, 4vw, 2rem) 3rem;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+button {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.icon {
+  width: 1.15em;
+  height: 1.15em;
+  display: inline-block;
+  vertical-align: -0.2em;
+}
+
+.icon-sm {
+  width: 0.95em;
+  height: 0.95em;
+}
+
+/* ---------------------------------- toast --------------------------------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  translate: -50% 0.75rem;
+  max-width: min(92vw, 26rem);
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 0.9rem;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, translate 0.25s ease;
+  z-index: 10;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  translate: -50% 0;
+}
+
+/* --------------------------------- header --------------------------------- */
+
+.app-header {
+  max-width: 62rem;
+  margin: 0 auto clamp(1.5rem, 4vw, 2.75rem);
+  text-align: center;
+}
+
+.brand-mark {
+  color: var(--accent-strong);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.app-header h1 {
+  margin-top: 0.5rem;
+  font-size: clamp(1.7rem, 4.5vw, 2.5rem);
+}
+
+.tagline {
+  max-width: 34rem;
+  margin: 0.6rem auto 0;
+  color: var(--muted);
+}
+
+.shelf-summary {
+  margin-top: 0.9rem;
+  font-size: 0.9rem;
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+/* --------------------------------- layout --------------------------------- */
+
+.layout {
+  max-width: 62rem;
+  margin: 0 auto;
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.add-panel {
+  padding: clamp(1.1rem, 3vw, 1.75rem);
+}
+
+.add-panel h2 {
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 1.1rem;
+}
+
+/* ----------------------------------- form --------------------------------- */
+
+#product-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.field-row {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.field-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.field-input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field-input::placeholder {
+  color: var(--muted);
+  opacity: 0.75;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.field-input:user-invalid {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
+.slot-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.slot-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.slot-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.slot-option span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 0.5rem;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.slot-option:hover span {
+  border-color: var(--accent);
+}
+
+.slot-option input:checked + span {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .slot-option input:checked + span {
+    color: #1d241b;
+  }
+}
+
+.slot-option input:focus-visible + span {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+}
+
+/* --------------------------------- buttons -------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.2rem;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  justify-self: start;
+  background: var(--accent);
+  color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-primary {
+    color: #1d241b;
+  }
+}
+
+.btn-primary:hover {
+  background: var(--accent-strong);
+}
+
+.btn-small {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+}
+
+.btn-toggle {
+  background: transparent;
+  border-color: var(--line);
+  color: inherit;
+}
+
+.btn-toggle:hover {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  color: inherit;
+}
+
+.btn-danger {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--danger);
+}
+
+.btn-danger:hover,
+.btn-danger.is-confirming {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+/* ------------------------------ shelf sections ---------------------------- */
+
+.shelf-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.shelf-heading h2 {
+  font-size: 1.25rem;
+}
+
+.shelf-icon {
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+}
+
+.shelf-icon.morning {
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.shelf-icon.evening {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.shelf-icon.paused {
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+
+.count-pill {
+  min-width: 1.6rem;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14.5rem, 1fr));
+  gap: 0.9rem;
+  align-items: stretch;
+}
+
+.plank {
+  height: 0.55rem;
+  margin-top: 0.9rem;
+  border-radius: 4px;
+  background: linear-gradient(to bottom, var(--line), transparent);
+}
+
+/* ------------------------------- product card ----------------------------- */
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.9rem;
+  padding: 1rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-3px);
+}
+
+.product-card.is-paused {
+  border-left-color: var(--gold);
+  opacity: 0.78;
+}
+
+.product-card.is-paused .product-name {
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: var(--gold);
+}
+
+.product-name {
+  font-size: 1.05rem;
+  overflow-wrap: anywhere;
+}
+
+.product-brand {
+  margin-top: 0.15rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.65rem;
+}
+
+.tag {
+  padding: 0.14rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.tag-concern {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.tag-slot {
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.card-actions .btn {
+  flex: 1;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  padding: 1.1rem 1.25rem;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
+}
+
+.paused-section .product-card {
+  border-left-color: var(--gold);
+}
+
+/* --------------------------------- footer --------------------------------- */
+
+.app-footer {
+  max-width: 62rem;
+  margin: 3rem auto 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ------------------------------- responsive ------------------------------- */
+
+@media (min-width: 34rem) {
+  .field-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .btn-primary {
+    justify-self: end;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+
+  .product-card:hover {
+    transform: none;
+  }
+}
