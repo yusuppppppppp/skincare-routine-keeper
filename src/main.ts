@@ -35,7 +35,7 @@ const els = {
   toast: qs<HTMLElement>('#toast'),
 };
 
-/* ---------------------------------- state --------------------------------- */
+/* ---------------------------- interaction state --------------------------- */
 
 let editingId: string | null = null;
 let searchQuery = '';
@@ -301,7 +301,10 @@ function handleToggle(id: string): void {
   const product = products.find((p) => p.id === id);
   if (!product) return;
   product.isActive = !product.isActive;
-  persist();
+  if (!persist()) {
+    product.isActive = !product.isActive;
+    return;
+  }
   cancelPendingDelete();
   render();
   showToast(product.isActive ? `${product.name} is back on your routine.` : `${product.name} paused.`);
@@ -326,7 +329,11 @@ function handleDelete(id: string): void {
   pendingDeleteId = null;
   window.clearTimeout(pendingDeleteTimer);
   if (editingId === removed.id) cancelEdit(false);
-  persist();
+  if (!persist()) {
+    products.splice(index, 0, removed);
+    render();
+    return;
+  }
   render();
   showToast(`${removed.name} removed from your shelf.`);
 }
