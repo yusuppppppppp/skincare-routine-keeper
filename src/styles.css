@@ -14,6 +14,7 @@
   --butter-soft: #ffedb8;
   --coral: #ee6352;
   --coral-soft: #ffddd7;
+  --on-accent: #211b14;
   --radius: 14px;
   --radius-sm: 10px;
   --shadow-md: 4px 4px 0 var(--ink);
@@ -29,7 +30,7 @@
     --surface: #26201a;
     --surface-tint: #332b22;
     --ink: #f3ecdd;
-    --muted: #a39682;
+    --muted: #b5a892;
     --accent: #8ec277;
     --accent-deep: #a9d694;
     --mint: #2f4023;
@@ -89,13 +90,7 @@ button {
 
 ::selection {
   background: var(--butter);
-  color: var(--bg);
-}
-
-@media (prefers-color-scheme: dark) {
-  ::selection {
-    color: #191511;
-  }
+  color: var(--on-accent);
 }
 
 .icon {
@@ -122,7 +117,7 @@ button {
   border: var(--border);
   border-radius: 999px;
   background: var(--butter);
-  color: var(--ink);
+  color: var(--on-accent);
   font-size: 0.9rem;
   font-weight: 650;
   box-shadow: var(--shadow-md);
@@ -130,12 +125,6 @@ button {
   pointer-events: none;
   transition: opacity 0.22s ease, translate 0.22s ease;
   z-index: 10;
-}
-
-@media (prefers-color-scheme: dark) {
-  .toast {
-    color: #191511;
-  }
 }
 
 .toast.is-visible {
@@ -327,7 +316,7 @@ button {
 
 .slot-option input:checked + span {
   background: var(--accent);
-  color: var(--ink);
+  color: var(--on-accent);
   translate: -2px -2px;
   box-shadow: var(--shadow-sm);
 }
@@ -368,6 +357,7 @@ button {
 .btn-primary {
   justify-self: start;
   background: var(--butter);
+  color: var(--on-accent);
 }
 
 .btn-primary:hover {
@@ -396,19 +386,12 @@ button {
 
 .btn-danger:hover {
   background: var(--coral);
-  color: #fff;
-}
-
-@media (prefers-color-scheme: dark) {
-  .btn-danger:hover,
-  .btn-danger.is-confirming {
-    color: #191511;
-  }
+  color: var(--on-accent);
 }
 
 .btn-danger.is-confirming {
   background: var(--coral);
-  color: #fff;
+  color: var(--on-accent);
   animation: nudge 0.35s ease;
 }
 
@@ -453,6 +436,7 @@ button {
 
 .shelf-icon.morning {
   background: var(--butter);
+  color: var(--on-accent);
 }
 
 .shelf-icon.evening {
