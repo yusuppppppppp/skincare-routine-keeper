@@ -547,7 +547,7 @@ button {
   flex-direction: column;
   justify-content: space-between;
   gap: 0.95rem;
-  padding: 1.05rem 1.15rem;
+  padding: 1.05rem 1.4rem 1.05rem 1.5rem;
   background: var(--surface);
   border: var(--border);
   border-radius: var(--radius-sm);
